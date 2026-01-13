@@ -1,0 +1,27 @@
+{
+  "name": "retail-dashboard-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "chart.js": "^4.5.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EunsuhJeon/retail-dashboard-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/EunsuhJeon/retail-dashboard-app/issues"
+  },
+  "homepage": "https://github.com/EunsuhJeon/retail-dashboard-app#readme",
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}
