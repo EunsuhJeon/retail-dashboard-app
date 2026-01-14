@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retail Dashboard</title>
+    <link rel="stylesheet" href="/src/styles/index.css">
+</head>
+<body>
+    <div id="root" class="min-h-screen bg-gray-50">
+        <!-- Header -->
+        <header id="header">
+        </header>
+
+        <!-- Sidebar -->
+        <aside id="sidebar">
+        </aside>
+
+        <!-- Mobile Overlay -->
+        <div id="mobile-overlay" class="overlay hidden"></div>
+
+        <!-- Main Content -->
+        <main>
+            <div class="container main-content">
+                <!-- Dashboard -->
+                <div id="dashboard-view" class="hidden">
+                </div>
+
+                <!-- Products -->
+                <div id="products-view" class="hidden">
+                </div>
+
+                <!-- Cart -->
+                <div id="cart-view" class="hidden">
+                </div>
+            </div>
+        </main>
+
+        <!-- Product Detail Modal -->
+        <div id="product-modal" class="modal">
+            <div class="modal-content">
+            </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div id="toast-container" class="toast-container"></div>
+    </div>
+
+    <script type="module" src="/src/app.js"></script>
+</body>
+</html>
