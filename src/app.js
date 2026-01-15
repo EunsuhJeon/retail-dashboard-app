@@ -94,7 +94,11 @@ function render() {
   document.getElementById('cart-view').classList.toggle('hidden', state.activeTab !== 'cart');
 
   if (state.activeTab === 'dashboard') {
-    renderDashboard(state.products, state.cartItems);
+    renderDashboard({
+      products: state.products,
+      cartItems: state.cartItems,
+      onUpdateStock: handleUpdateStock,
+    });
   } else if (state.activeTab === 'products') {
     renderProductGallery({
       products: state.products,
@@ -245,6 +249,24 @@ async function handleCheckout() {
     render();
   } catch (error) {
     showToast(error.message || 'Checkout failed', 'error');
+    console.error(error);
+  }
+}
+
+async function handleUpdateStock(productId, quantity) {
+  try {
+    const updatedProduct = await api.updateStock(productId, quantity);
+    state.products = state.products.map((p) => (p.id === productId ? updatedProduct : p));
+    
+    if (state.selectedProduct?.id === productId) {
+      state.selectedProduct = updatedProduct;
+    }
+    
+    showToast(`Stock updated successfully`, 'success');
+    await loadProducts();
+    render();
+  } catch (error) {
+    showToast(error.message || 'Failed to update stock', 'error');
     console.error(error);
   }
 }

@@ -8,7 +8,7 @@ Chart.register(...registerables); // registerables: 차트 타입과 스케일, 
 
 let charts = {};
 
-export async function renderDashboard(products, cartItems) { // 서버에서 데이터를 가져오므로 async 비동기 처리
+export async function renderDashboard({ products, cartItems, onUpdateStock }) { // 서버에서 데이터를 가져오므로 async 비동기 처리
   const dashboardEl = document.getElementById('dashboard-view');
   
   // Destroy existing charts
@@ -157,6 +157,7 @@ export async function renderDashboard(products, cartItems) { // 서버에서 데
                 <th>Stock</th>
                 <th>Price</th>
                 <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -164,12 +165,36 @@ export async function renderDashboard(products, cartItems) { // 서버에서 데
                 <tr>
                   <td>${product.name}</td>
                   <td class="text-secondary">${product.category}</td>
-                  <td>${product.stock}</td>
+                  <td class="font-medium">${product.stock}</td>
                   <td>$${product.price.toFixed(2)}</td>
                   <td>
                     <span class="badge ${product.stock === 0 ? 'badge-red' : 'badge-orange'}">
                       ${product.stock === 0 ? 'Out of Stock' : 'Low Stock'}
                     </span>
+                  </td>
+                  <td>
+                    <div class="flex items-center gap-2" style="flex-wrap: nowrap;">
+                      <button
+                        class="btn btn-sm btn-outline stock-decrease-btn"
+                        data-product-id="${product.id}"
+                        style="padding: 0.25rem 0.5rem; min-width: 2rem;"
+                        title="Decrease stock"
+                      >
+                        <svg style="width: 0.875rem; height: 0.875rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                        </svg>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-primary stock-increase-btn"
+                        data-product-id="${product.id}"
+                        style="padding: 0.25rem 0.5rem; min-width: 2rem;"
+                        title="Increase stock"
+                      >
+                        <svg style="width: 0.875rem; height: 0.875rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               `).join('')}
@@ -179,6 +204,26 @@ export async function renderDashboard(products, cartItems) { // 서버에서 데
       </div>
     </div>
   `;
+  
+  // Setup stock update event listeners
+  if (onUpdateStock) {
+    const decreaseBtns = dashboardEl.querySelectorAll('.stock-decrease-btn');
+    const increaseBtns = dashboardEl.querySelectorAll('.stock-increase-btn');
+    
+    decreaseBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const productId = parseInt(btn.dataset.productId);
+        onUpdateStock(productId, -1);
+      });
+    });
+    
+    increaseBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const productId = parseInt(btn.dataset.productId);
+        onUpdateStock(productId, 1);
+      });
+    });
+  }
   
   // Render charts after a small delay to ensure DOM is ready
   // html이 dom에 삽입된 뒤 canvas 요소가 존재하는지 확인하기 위해 렌더링을 의도적으로 지연시킴
