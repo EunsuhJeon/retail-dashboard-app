@@ -1,4 +1,5 @@
 // ProductCard component
+import { getImageUrl } from '../services/api.js';
 
 export function createProductCard({ product, onAddToCart, onViewDetails }) {
   const isLowStock = product.stock < 10;
@@ -16,9 +17,10 @@ export function createProductCard({ product, onAddToCart, onViewDetails }) {
   card.innerHTML = `
     <div class="product-image relative">
       <img
-        src="${product.image}"
+        src="${getImageUrl(product.image)}"
         alt="${product.name}"
         style="width: 100%; height: 100%; object-fit: cover;"
+        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23e5e7eb%22 width=%22400%22 height=%22400%22/%3E%3Ctext fill=%22%239ca3af%22 font-family=%22sans-serif%22 font-size=%2218%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3ENo Image%3C/text%3E%3C/svg%3E'"
       />
       ${isLowStock && !isOutOfStock ? `
         <span class="badge badge-orange absolute top-2 right-2">

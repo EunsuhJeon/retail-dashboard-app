@@ -4,6 +4,30 @@
 // cartStorage: manage localStorage < 브라우저의 독립된 로컬스토리지 (개별적으로 관리됨). 브라우저 캐시 삭제 시 초기화됨
 
 const API_BASE_URL = 'http://localhost:3001/api'; // 서버단 포트번호(index.js에서 정의)
+const SERVER_BASE_URL = 'http://localhost:3001'; // 서버 기본 URL (이미지 파일 제공용)
+
+/**
+ * 이미지 URL을 완전한 경로로 변환
+ * @param {string} imagePath - products.json에 정의된 이미지 경로
+ * @returns {string} - 완전한 이미지 URL 또는 placeholder 이미지
+ */
+export function getImageUrl(imagePath) {
+  // 빈 문자열이거나 경로가 없으면 placeholder 반환
+  if (!imagePath || imagePath.trim() === '') {
+    // SVG placeholder 이미지 반환
+    return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23e5e7eb" width="400" height="400"/%3E%3Ctext fill="%239ca3af" font-family="sans-serif" font-size="18" dy="10.5" font-weight="bold" x="50%25" y="50%25" text-anchor="middle"%3ENo Image%3C/text%3E%3C/svg%3E';
+  }
+  
+  // 이미 절대 URL인 경우 (http:// 또는 https://로 시작)
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+  
+  // 상대 경로인 경우 서버 URL 추가
+  // 경로가 /로 시작하면 그대로 사용, 아니면 / 추가
+  const normalizedPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+  return `${SERVER_BASE_URL}${normalizedPath}`;
+}
 
 // API functions
 export const api = {
@@ -61,6 +85,22 @@ export const api = {
     const response = await fetch(`${API_BASE_URL}/dashboard`);
     if (!response.ok) {
       throw new Error('Failed to fetch dashboard data');
+    }
+    return response.json();
+  },
+
+  // Update product stock
+  async updateStock(productId, quantity) {
+    const response = await fetch(`${API_BASE_URL}/products/${productId}/stock`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ quantity }),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to update stock');
     }
     return response.json();
   },
